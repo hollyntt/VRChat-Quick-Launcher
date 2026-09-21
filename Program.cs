@@ -493,7 +493,7 @@ namespace VRCQuickLauncher
         {
             ImGui.TextDisabled("Launch options");
             ImGui.SameLine(ImGui.GetContentRegionAvail().X - 30);
-            if (ImGui.SmallButton("Clear")) ClearLaunchOptions();
+            if (ImGui.SmallButton("Clear##launchoptions")) ClearLaunchOptions();
 
             if (ImGui.CollapsingHeader("Debug", ImGuiTreeNodeFlags.DefaultOpen))
             {
@@ -550,7 +550,7 @@ namespace VRCQuickLauncher
         {
             ImGui.TextDisabled("Instance info");
             ImGui.SameLine(ImGui.GetContentRegionAvail().X - 30);
-            if (ImGui.SmallButton("Clear")) ClearInstanceInfo();
+            if (ImGui.SmallButton("Clear##instanceinfo")) ClearInstanceInfo();
 
             int mode = (int)_config.InstanceMode;
             if (ImGui.RadioButton("Create", ref mode, (int)InstanceMode.Create)) _config.InstanceMode = InstanceMode.Create;
