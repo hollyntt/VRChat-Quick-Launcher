@@ -7,7 +7,7 @@
         <Nullable>enable</Nullable>
         <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
         <UseWindowsForms>false</UseWindowsForms>
-        <ApplicationIcon>meow.ico</ApplicationIcon>
+        <ApplicationIcon>icon.ico</ApplicationIcon>
         <PackageIcon>meow.png</PackageIcon>
     </PropertyGroup>
     
@@ -25,7 +25,6 @@
     
     <ItemGroup>
       <None Remove="meow.png" />
-      <EmbeddedResource Include="meow.png" />
     </ItemGroup>
 
 </Project>

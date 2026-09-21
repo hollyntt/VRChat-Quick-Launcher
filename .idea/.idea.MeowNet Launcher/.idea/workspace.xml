@@ -15,6 +15,9 @@
   <component name="ChangeListManager">
     <list default="true" id="fc74a32b-b20d-46cf-99e9-b4facb01b96f" name="Changes" comment="">
       <change beforePath="$PROJECT_DIR$/.idea/.idea.MeowNet Launcher/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/.idea.MeowNet Launcher/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/VRChat Quick Launcher.csproj" beforeDir="false" afterPath="$PROJECT_DIR$/VRChat Quick Launcher.csproj" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/meow.ico" beforeDir="false" afterPath="$PROJECT_DIR$/icon.ico" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/meow.png" beforeDir="false" afterPath="$PROJECT_DIR$/icon.png" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -100,7 +103,8 @@
   <component name="VcsManagerConfiguration">
     <option name="CLEAR_INITIAL_COMMIT_MESSAGE" value="true" />
     <MESSAGE value="isreal fortnite" />
-    <option name="LAST_COMMIT_MESSAGE" value="isreal fortnite" />
+    <MESSAGE value="update docs" />
+    <option name="LAST_COMMIT_MESSAGE" value="update docs" />
   </component>
   <component name="XDebuggerManager">
     <breakpoint-manager>
