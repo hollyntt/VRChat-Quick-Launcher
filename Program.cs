@@ -89,8 +89,14 @@ namespace VRCQuickLauncher
         private static float _animTime = 0f;
 
         private static Vector4 _accent = new Vector4(0.16f, 0.55f, 1.00f, 1f); // VRChat-ish blue
-        private static readonly Vector4 Danger = new Vector4(1.00f, 0.30f, 0.35f, 1f);
-        private static readonly Vector4 Good = new Vector4(0.45f, 0.95f, 0.55f, 1f);
+        private static Vector4 Danger = new Vector4(1.00f, 0.30f, 0.35f, 1f);
+        private static Vector4 Good = new Vector4(0.45f, 0.95f, 0.55f, 1f);
+
+        // Theme-derived colours, (re)computed in ApplyStyle and read every frame.
+        private static Vector4 _windowBg = new Vector4(0.08f, 0.08f, 0.10f, 1f);
+        private static Vector4 _titleBg = new Vector4(0.15f, 0.15f, 0.22f, 1f);
+        private static Vector4 _titleBgActive = new Vector4(0.20f, 0.20f, 0.30f, 1f);
+        private static bool _isDarkTheme = true;
 
         private static LauncherConfig _config = new();
 
@@ -110,7 +116,25 @@ namespace VRCQuickLauncher
             Raylib.SetTargetFPS(60);
             rlImGui.Setup(true);
 
-            LoadEmbeddedIcon();
+            try
+            {
+                string iconPath = Path.Combine(
+                    AppDomain.CurrentDomain.BaseDirectory,
+                    "icon.png"
+                );
+            
+                if (File.Exists(iconPath))
+                {
+                    Image img = Raylib.LoadImage(iconPath);
+                    Raylib.SetWindowIcon(img);
+                    Raylib.UnloadImage(img);
+                }
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"Failed to load icon: {ex.Message}");
+            }
+            
             ApplyStyle();
 
             while (!Raylib.WindowShouldClose() && !_shouldExit)
@@ -126,7 +150,8 @@ namespace VRCQuickLauncher
                 }
 
                 Raylib.BeginDrawing();
-                Raylib.ClearBackground(new Color(20, 20, 28, 255));
+                Raylib.ClearBackground(new Color(
+                    (int)(_windowBg.X * 255), (int)(_windowBg.Y * 255), (int)(_windowBg.Z * 255), 255));
                 rlImGui.Begin();
                 DrawUI(isRunning);
                 rlImGui.End();
@@ -234,56 +259,99 @@ namespace VRCQuickLauncher
         // Icon + style
         // ---------------------------------------------------------------
 
-        private static unsafe void LoadEmbeddedIcon()
-        {
-            var assembly = Assembly.GetExecutingAssembly();
-            string[] names = assembly.GetManifestResourceNames();
-            string? resourceName = names.FirstOrDefault(n => n.EndsWith("icon.png"));
-            if (resourceName == null) return;
+        private static Vector4 WithAlpha(Vector4 c, float a) => new Vector4(c.X, c.Y, c.Z, a);
 
-            using Stream? stream = assembly.GetManifestResourceStream(resourceName);
-            if (stream == null) return;
-
-            byte[] data = new byte[stream.Length];
-            stream.Read(data, 0, data.Length);
-            fixed (byte* pData = data)
-            {
-                byte[] ext = { (byte)'.', (byte)'p', (byte)'n', (byte)'g', 0 };
-                fixed (byte* pExt = ext)
-                {
-                    Image img = Raylib.LoadImageFromMemory((sbyte*)pExt, pData, data.Length);
-                    if ((IntPtr)img.Data != IntPtr.Zero)
-                    {
-                        Raylib.SetWindowIcon(img);
-                        Raylib.UnloadImage(img);
-                    }
-                }
-            }
-        }
+        private static Vector4 Mix(Vector4 a, Vector4 b, float t) => new Vector4(
+            a.X + (b.X - a.X) * t,
+            a.Y + (b.Y - a.Y) * t,
+            a.Z + (b.Z - a.Z) * t,
+            1f);
 
         private static void ApplyStyle()
         {
             bool dark = _config.Theme == AppTheme.Dark || _config.Theme == AppTheme.ColourfulDark;
             bool colourful = _config.Theme == AppTheme.ColourfulLight || _config.Theme == AppTheme.ColourfulDark;
+            _isDarkTheme = dark;
 
+            // Start from ImGui's base palette, then override every accent-driven
+            // colour below. (ImGui's defaults are blue, so anything we don't
+            // override would look the same in every theme.)
             if (dark) ImGui.StyleColorsDark();
             else ImGui.StyleColorsLight();
 
-            // Colourful variants get a vivid accent; the plain variants keep
-            // ImGui's default grey so they read as neutral/muted.
+            // Colourful variants get a vivid accent; plain variants get a neutral grey.
             _accent = colourful
                 ? (dark ? new Vector4(0.90f, 0.20f, 0.30f, 1f) : new Vector4(0.16f, 0.55f, 1.00f, 1f))
-                : new Vector4(0.45f, 0.45f, 0.50f, 1f);
+                : (dark ? new Vector4(0.60f, 0.60f, 0.66f, 1f) : new Vector4(0.42f, 0.42f, 0.48f, 1f));
+
+            Vector4 accentHi = Mix(_accent, new Vector4(1f, 1f, 1f, 1f), 0.25f);   // pressed / active
+            Vector4 accentLo = Mix(_accent, new Vector4(0f, 0f, 0f, 1f), 0.35f);   // resting fills
+
+            _windowBg = dark ? new Vector4(0.08f, 0.08f, 0.10f, 1f) : new Vector4(0.94f, 0.94f, 0.96f, 1f);
+            Vector4 frameBg = dark ? new Vector4(0.14f, 0.14f, 0.18f, 1f) : new Vector4(0.86f, 0.86f, 0.90f, 1f);
+
+            // Title bar (UpdateTitleBarStyle reads these when VRChat isn't running)
+            if (colourful)
+            {
+                _titleBg = Mix(_windowBg, _accent, 0.35f);
+                _titleBgActive = Mix(_windowBg, _accent, dark ? 0.60f : 0.55f);
+            }
+            else
+            {
+                _titleBg = dark ? new Vector4(0.15f, 0.15f, 0.18f, 1f) : new Vector4(0.82f, 0.82f, 0.85f, 1f);
+                _titleBgActive = dark ? new Vector4(0.20f, 0.20f, 0.25f, 1f) : new Vector4(0.75f, 0.75f, 0.80f, 1f);
+            }
+
+            // Status text needs to stay readable against the theme background.
+            Good = dark ? new Vector4(0.45f, 0.95f, 0.55f, 1f) : new Vector4(0.05f, 0.55f, 0.15f, 1f);
+            Danger = dark ? new Vector4(1.00f, 0.30f, 0.35f, 1f) : new Vector4(0.80f, 0.10f, 0.15f, 1f);
 
             var style = ImGui.GetStyle();
             style.WindowRounding = 0f;
             style.ChildRounding = 0f;
             style.FrameRounding = 3f;
-            style.Colors[(int)ImGuiCol.WindowBg] = dark ? new Vector4(0.08f, 0.08f, 0.10f, 1f) : new Vector4(0.94f, 0.94f, 0.96f, 1f);
-            style.Colors[(int)ImGuiCol.ButtonHovered] = _accent;
-            style.Colors[(int)ImGuiCol.Separator] = _accent;
-            style.Colors[(int)ImGuiCol.PlotHistogram] = _accent;
-            style.Colors[(int)ImGuiCol.PlotHistogramHovered] = _accent;
+
+            var c = style.Colors;
+            c[(int)ImGuiCol.WindowBg] = _windowBg;
+            c[(int)ImGuiCol.PopupBg] = Mix(_windowBg, dark ? new Vector4(0f, 0f, 0f, 1f) : new Vector4(1f, 1f, 1f, 1f), 0.15f);
+            c[(int)ImGuiCol.MenuBarBg] = frameBg;
+
+            c[(int)ImGuiCol.FrameBg] = frameBg;
+            c[(int)ImGuiCol.FrameBgHovered] = WithAlpha(Mix(frameBg, _accent, 0.35f), 1f);
+            c[(int)ImGuiCol.FrameBgActive] = WithAlpha(Mix(frameBg, _accent, 0.55f), 1f);
+
+            c[(int)ImGuiCol.Button] = accentLo;
+            c[(int)ImGuiCol.ButtonHovered] = _accent;
+            c[(int)ImGuiCol.ButtonActive] = accentHi;
+
+            c[(int)ImGuiCol.Header] = WithAlpha(_accent, 0.40f);
+            c[(int)ImGuiCol.HeaderHovered] = WithAlpha(_accent, 0.80f);
+            c[(int)ImGuiCol.HeaderActive] = _accent;
+
+            c[(int)ImGuiCol.CheckMark] = _accent;
+            c[(int)ImGuiCol.SliderGrab] = _accent;
+            c[(int)ImGuiCol.SliderGrabActive] = accentHi;
+
+            c[(int)ImGuiCol.ScrollbarGrab] = accentLo;
+            c[(int)ImGuiCol.ScrollbarGrabHovered] = _accent;
+            c[(int)ImGuiCol.ScrollbarGrabActive] = accentHi;
+
+            c[(int)ImGuiCol.Separator] = _accent;
+            c[(int)ImGuiCol.SeparatorHovered] = accentHi;
+            c[(int)ImGuiCol.SeparatorActive] = accentHi;
+
+            c[(int)ImGuiCol.ResizeGrip] = WithAlpha(_accent, 0.25f);
+            c[(int)ImGuiCol.ResizeGripHovered] = WithAlpha(_accent, 0.67f);
+            c[(int)ImGuiCol.ResizeGripActive] = WithAlpha(_accent, 0.95f);
+
+            c[(int)ImGuiCol.TextSelectedBg] = WithAlpha(_accent, 0.35f);
+            c[(int)ImGuiCol.NavCursor] = _accent;
+            c[(int)ImGuiCol.PlotHistogram] = _accent;
+            c[(int)ImGuiCol.PlotHistogramHovered] = accentHi;
+
+            c[(int)ImGuiCol.TitleBg] = _titleBg;
+            c[(int)ImGuiCol.TitleBgActive] = _titleBgActive;
+            c[(int)ImGuiCol.TitleBgCollapsed] = _titleBg;
         }
 
         private static void UpdateTitleBarStyle(bool isRunning)
@@ -292,13 +360,23 @@ namespace VRCQuickLauncher
             float pulse = (float)(0.5f + 0.5f * Math.Sin(_animTime * 3));
             if (isRunning)
             {
-                colors[(int)ImGuiCol.TitleBg] = new Vector4(0.1f + pulse * 0.1f, 0.4f + pulse * 0.1f, 0.1f, 1f);
-                colors[(int)ImGuiCol.TitleBgActive] = new Vector4(0.2f + pulse * 0.2f, 0.6f + pulse * 0.2f, 0.2f, 1f);
+                // Green "VRChat is running" pulse; lighter greens on light themes so the title text stays readable.
+                if (_isDarkTheme)
+                {
+                    colors[(int)ImGuiCol.TitleBg] = new Vector4(0.1f + pulse * 0.1f, 0.4f + pulse * 0.1f, 0.1f, 1f);
+                    colors[(int)ImGuiCol.TitleBgActive] = new Vector4(0.2f + pulse * 0.2f, 0.6f + pulse * 0.2f, 0.2f, 1f);
+                }
+                else
+                {
+                    colors[(int)ImGuiCol.TitleBg] = new Vector4(0.60f + pulse * 0.05f, 0.85f, 0.60f, 1f);
+                    colors[(int)ImGuiCol.TitleBgActive] = new Vector4(0.45f + pulse * 0.10f, 0.80f + pulse * 0.10f, 0.45f, 1f);
+                }
             }
             else
             {
-                colors[(int)ImGuiCol.TitleBg] = new Vector4(0.15f, 0.15f, 0.22f, 1f);
-                colors[(int)ImGuiCol.TitleBgActive] = new Vector4(0.20f, 0.20f, 0.30f, 1f);
+                // Idle: use the active theme's title colours instead of hardcoded ones.
+                colors[(int)ImGuiCol.TitleBg] = _titleBg;
+                colors[(int)ImGuiCol.TitleBgActive] = _titleBgActive;
             }
         }
 
@@ -580,16 +658,12 @@ namespace VRCQuickLauncher
             }
             ImGui.EndDisabled();
 
-            if (isRunning)
+            // Only surface errors (e.g. bad VRChat path); the "VRChat is running" /
+            // "Ready." / "Saved." messages are intentionally not shown.
+            if (_isError && !string.IsNullOrEmpty(_status))
             {
                 ImGui.Dummy(new Vector2(0, 6));
-                ImGui.TextColored(Good, "VRChat is running.");
-            }
-
-            if (!string.IsNullOrEmpty(_status))
-            {
-                ImGui.Dummy(new Vector2(0, 6));
-                ImGui.TextColored(_isError ? Danger : Good, _status);
+                ImGui.TextColored(Danger, _status);
             }
         }
 
@@ -699,6 +773,7 @@ namespace VRCQuickLauncher
                 if (LoadConfigFrom(path))
                 {
                     _configPath = path;
+                    ApplyStyle(); // the loaded config may carry a different theme
                     _status = "Loaded config.";
                     _isError = false;
                 }
