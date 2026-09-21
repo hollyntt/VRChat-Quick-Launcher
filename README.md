@@ -2,6 +2,6 @@ hi this is just a launcher for VRChat, it doesn't include autoupdates, installin
 but it will get there.
 
 based off:
-- https://github.com/hollyntt/RecRoom-Revival-Launcher
+- https://github.com/hollyntt/MeowNet-Launcher
 
 ## THIS IS NOT A OFFICIAL LAUNCHER, THIS IS A FANMADE LAUNCHER.

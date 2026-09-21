@@ -14,14 +14,7 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="fc74a32b-b20d-46cf-99e9-b4facb01b96f" name="Changes" comment="">
-      <change beforePath="$PROJECT_DIR$/.idea/.idea.MeowNet Launcher/.idea/.gitignore" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/.idea.MeowNet Launcher/.idea/encodings.xml" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/.idea.MeowNet Launcher/.idea/indexLayout.xml" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/.idea.MeowNet Launcher/.idea/vcs.xml" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/MeowNet Launcher.csproj" beforeDir="false" afterPath="$PROJECT_DIR$/VRChat Quick Launcher.csproj" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/MeowNet Launcher.sln" beforeDir="false" afterPath="$PROJECT_DIR$/VRChat Quick Launcher.sln" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/NativeMethods.cs" beforeDir="false" afterPath="$PROJECT_DIR$/NativeMethods.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Program.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Program.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/.idea.MeowNet Launcher/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/.idea.MeowNet Launcher/.idea/workspace.xml" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -106,6 +99,8 @@
   <component name="UnityProjectConfiguration" hasMinimizedUI="false" />
   <component name="VcsManagerConfiguration">
     <option name="CLEAR_INITIAL_COMMIT_MESSAGE" value="true" />
+    <MESSAGE value="isreal fortnite" />
+    <option name="LAST_COMMIT_MESSAGE" value="isreal fortnite" />
   </component>
   <component name="XDebuggerManager">
     <breakpoint-manager>
