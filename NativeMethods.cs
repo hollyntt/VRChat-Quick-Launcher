@@ -1,9 +1,10 @@
-﻿using System.Diagnostics;
+﻿using System;
+using System.Diagnostics;
 using System.Runtime.CompilerServices;
 using System.Runtime.InteropServices;
 using System.Text;
 
-namespace MeowNet_Launcher
+namespace VRCQuickLauncher
 {
     public static class NativeMethods
     {
@@ -22,8 +23,8 @@ namespace MeowNet_Launcher
         [StructLayout(LayoutKind.Sequential)]
         public struct MEMORYSTATUSEX
         {
-            public uint  dwLength;
-            public uint  dwMemoryLoad;
+            public uint dwLength;
+            public uint dwMemoryLoad;
             public ulong ullTotalPhys;
             public ulong ullAvailPhys;
             public ulong ullTotalPageFile;
@@ -58,7 +59,47 @@ namespace MeowNet_Launcher
         public static extern uint GetWindowThreadProcessId(IntPtr hWnd, out uint lpdwProcessId);
 
         public delegate bool EnumWindowsProc(IntPtr hWnd, IntPtr lParam);
-        
+
+        // --- Added for VRC Quick Launcher ---
+
+        // Used by "Browse" next to the VRChat.exe path field.
+        [StructLayout(LayoutKind.Sequential, CharSet = CharSet.Unicode)]
+        public struct OPENFILENAME
+        {
+            public int lStructSize;
+            public IntPtr hwndOwner;
+            public IntPtr hInstance;
+            public string lpstrFilter;
+            public string lpstrCustomFilter;
+            public int nMaxCustFilter;
+            public int nFilterIndex;
+            public string lpstrFile;
+            public int nMaxFile;
+            public string lpstrFileTitle;
+            public int nMaxFileTitle;
+            public string lpstrInitialDir;
+            public string lpstrTitle;
+            public int Flags;
+            public short nFileOffset;
+            public short nFileExtension;
+            public string lpstrDefExt;
+            public IntPtr lCustData;
+            public IntPtr lpfnHook;
+            public string lpTemplateName;
+            public IntPtr pvReserved;
+            public int dwReserved;
+            public int FlagsEx;
+        }
+
+        [DllImport("comdlg32.dll", SetLastError = true, CharSet = CharSet.Unicode)]
+        public static extern bool GetOpenFileNameW(ref OPENFILENAME ofn);
+
+        // Used by "Auto-layout" to tile launched VRChat windows across the monitor.
+        [DllImport("user32.dll")]
+        public static extern bool MoveWindow(IntPtr hWnd, int X, int Y, int nWidth, int nHeight, bool bRepaint);
+
+        [DllImport("user32.dll")]
+        public static extern bool SetForegroundWindow(IntPtr hWnd);
 #endif
     }
 }
