@@ -21,10 +21,16 @@
       <PackageReference Include="SteamVR_HUDCenter" Version="0.0.0.2" />
       <PackageReference Include="Valve" Version="1.0.0" />
     </ItemGroup>
-    
+
     <ItemGroup>
-      <None Remove="meow.png" />
-      <EmbeddedResource Include="meow.png" />
+        <None Remove="icon.png" />
+        <EmbeddedResource Include="icon.png">
+            <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+        </EmbeddedResource>
+        <None Remove="icon.ico" />
+        <EmbeddedResource Include="icon.ico">
+            <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+        </EmbeddedResource>
     </ItemGroup>
 
 </Project>

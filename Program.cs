@@ -107,8 +107,7 @@ namespace VRChat_Quick_Launcher
 
             Raylib.InitWindow(760, 660, AppTitle);
             Raylib.SetTargetFPS(60);
-            rlImGui.Setup(true);
-
+            
             try
             {
                 string iconPath = Path.Combine(
@@ -127,6 +126,8 @@ namespace VRChat_Quick_Launcher
             {
                 Console.WriteLine($"Failed to load icon: {ex.Message}");
             }
+            
+            rlImGui.Setup(true);
             
             ApplyStyle();
 
