@@ -723,7 +723,7 @@ namespace VRChat_Quick_Launcher
             var ofn = new NativeMethods.OPENFILENAME
             {
                 lStructSize = Marshal.SizeOf<NativeMethods.OPENFILENAME>(),
-                lpstrFilter = "start_protected_game.exe\0start_protected_gamet.exe\0All files\0*.*\0\0",
+                lpstrFilter = "start_protected_game.exe\0start_protected_game.exe\0All files\0*.*\0\0",
                 lpstrFile = buffer,
                 nMaxFile = buffer.Length,
                 lpstrTitle = "Locate start_protected_game.exe",
@@ -907,7 +907,7 @@ namespace VRChat_Quick_Launcher
         {
             if (string.IsNullOrWhiteSpace(_config.VRChatPath) || !File.Exists(_config.VRChatPath))
             {
-                _status = "Set a valid path to VRChat.exe first.";
+                _status = "Set a valid path to start_protected_game.exe first.";
                 _isError = true;
                 return;
             }
