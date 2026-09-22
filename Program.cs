@@ -1,20 +1,13 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Diagnostics;
-using System.IO;
-using System.Linq;
-using System.Net.Http;
+﻿using System.Diagnostics;
 using System.Numerics;
-using System.Reflection;
 using System.Runtime.InteropServices;
 using System.Text.Json;
-using System.Threading.Tasks;
 using ImGuiNET;
 using Raylib_cs;
 using rlImGui_cs;
 using Valve.VR;
 
-namespace VRCQuickLauncher
+namespace VRChat_Quick_Launcher
 {
     // A single launchable "slot". Each profile maps 1:1 to VRChat's own
     // --profile=X launch flag, which is what actually gives each instance

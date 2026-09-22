@@ -15,8 +15,6 @@
   <component name="ChangeListManager">
     <list default="true" id="fc74a32b-b20d-46cf-99e9-b4facb01b96f" name="Changes" comment="">
       <change beforePath="$PROJECT_DIR$/.idea/.idea.MeowNet Launcher/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/.idea.MeowNet Launcher/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Program.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Program.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/README.md" beforeDir="false" afterPath="$PROJECT_DIR$/README.md" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -117,7 +115,8 @@
     <MESSAGE value="update docs" />
     <MESSAGE value="updated icons" />
     <MESSAGE value="uh ok" />
-    <option name="LAST_COMMIT_MESSAGE" value="uh ok" />
+    <MESSAGE value="Make it accurate" />
+    <option name="LAST_COMMIT_MESSAGE" value="Make it accurate" />
   </component>
   <component name="XDebuggerManager">
     <breakpoint-manager>
